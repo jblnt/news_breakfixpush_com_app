@@ -24,7 +24,9 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ['DJANGO_DEBUG'] == 'True')
 
-ALLOWED_HOSTS = ['news.breakfixpush.com', 'tf-breakfixpush-dev.eba-qdpkqyr4.us-east-1.elasticbeanstalk.com', '172.31.20.118']
+# HOSTNAMES DJANGO IS ALLOWED TO COMMUNICATE WITH
+allowed_hostnames = os.environ['ALLOWED_URLS']
+ALLOWED_HOSTS = allowed_hostnames.split(";")
 
 # Application definition
 
@@ -73,7 +75,6 @@ WSGI_APPLICATION = 'project_wallofcode_news.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# 'OPTIONS': { 'read_default_file': '/home/jules/.django_newsapp.cnf', },
 '''
 DATABASES = {
     'default': {
