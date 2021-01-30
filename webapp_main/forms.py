@@ -4,7 +4,7 @@ class SearchForm(forms.Form):
     q=forms.CharField(label='Search', max_length=100)
 
     #update the widget(html code rendered on the page) with specific values. 
-    q.widget.attrs.update({'autocomplete':'off'})
+    q.widget.attrs.update({'autocomplete':'off', 'placeholder':'Search Headlines', 'class':'form-control'})
 
 class DateForm(forms.Form):
-    q=forms.DateField(widget = forms.DateInput(attrs={'type':'date'}))
+    q=forms.DateField(label='Archive', widget = forms.DateInput(attrs={'type':'date', 'class':'form-control'}))

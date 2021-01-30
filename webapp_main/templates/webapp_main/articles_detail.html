@@ -1,24 +1,29 @@
 {% extends "webapp_main/base_html.html" %}
 {% load get_images %}
 
-{% block content %}
-<div class="art_body flex">
-        <div class="sections">
-                {% if article.images != "none" %}
-                        <div class="art_images_box flex">
-                        {% for img in article.images|spl %}
-                                <a href="{{ img }}"><img class="art_image" src="{{ img }}" alt=""></a>                                             
-                        {% endfor %}
-                        </div>  
-                {% endif %}
 
-                <article>
-                        <h3 class="detailed_title">{{ article.title|safe }}</h3>
-                        {% if article.content %}
-                                <p class="detailed_cont">{{ article.content|safe }}</p>
-                        {% endif %}
-                </article>
-                
+
+{% block content %}
+    <div class="col-md-9 col-lg-10 ms-sm-auto">
+
+        <div class="d-flex flex-wrap flex-md-nowrap m-auto col-md-8 p-3 article-section mt-4 custom-border">
+            <article>
+                    <h3 id="article-title" class="h3 text-white">{{ article.title|safe }}</h3>
+
+                    {% if article.content %}
+                        <p id="article-content" class="text-white">{{ article.content|safe }}</p>
+                    {% endif %}
+            </article>
+
+            {% if article.images != "none" %}
+                <div class="ms-3 d-flex flex-column">
+                {% for img in article.images|spl %}
+                    <a href="{{ img }}"><img class="img-thumbnail mb-2" src="{{ img }}" alt="" style="max-width: 240px;"></a>                                             
+                {% endfor %}
+                </div>  
+            {% endif %}
+    
         </div>
-</div>
+
+    </div>
 {% endblock content %}

@@ -3,116 +3,133 @@
 {% load static %}
 
 {% block content %}
-<div class="home_main flex">
-    <div class='flex search_user main_font'>
-        <a href="javascript:void(0)" class="home-icon" onclick="openNav()"><img src="{% static 'webapp_main/images/guyana_logo.png' %}" alt="guyana's map"></a>
+<div  class="col-md-9 col-lg-10 ms-sm-auto">
 
-        <div id="main_overlay" class="overlay flex">
-                <a href="javascript:void(0)" class="cls" onclick="closeNav()">x</a>
-                <div class="overlay_content">
-                    <a href="{% url 'news-home' %}">Home</a>
-                    <a href="{% url 'source' 'kaieteur'  %}">Kaieteur</a>
-                    <a href="{% url 'source' 'stabroek' %}">Stabroek</a>
-                </div>
+    <div class="row">
+
+        <div id="top-input" class="d-md-flex flex-wrap justify-content-between px-sm-1 px-md-5 custom-header">
+            
+            {% if form %}
+                <form class="d-flex py-2" action="{% url 'global-search' %}" method="GET">
+                    {{ form }}
+                </form>
+
+                {% if user.is_authenticated %}
+                    <div class="d-flex py-2 justify-content-center justify-content-md-start">
+                        <p class="text-white m-0">Hello, {{ user.username }} &nbsp; | &nbsp;<a href="{% url 'logout' %}"><button class="btn btn-outline-success">Logout</button></a></p>
+                    </div>
+                {% else %}
+                    <div class="d-flex py-2 justify-content-center justify-content-md-start">
+                        <p class="text-white m-0">Hello, Guest &nbsp; | &nbsp;<a href="{% url 'login' %}"><button class="btn btn-outline-success">Login</button></a></p>
+                    </div>                    
+                {% endif %}            
+
+            {% else %}
+            <div class="ms-auto py-2">
+                <p class="text-white mb-0 text-center">Hello, {{ user.username }} &nbsp; | &nbsp;<a href="{% url 'logout' %}"><button class="btn btn-outline-success">Logout</button></a></p>
+            </div>                    
+            {% endif %}  
+            
         </div>
 
-        {% if form %}
-            <form action="{% url 'global-search' %}" method="GET">
-                {{ form }}
-            </form>
+        <div id="article-list" class="pt-3 px-sm-1 px-md-5">
 
-            {% if user.is_authenticated %}
-                <p>Hello, {{ user.username }} &nbsp; | &nbsp;<a href="{% url 'logout' %}">Logout</a></p>
-            {% else %}
-                <p>Hello, Guest &nbsp; | &nbsp;<a href="{% url 'login' %}">Login</a></p>
-            {% endif %}            
-
-        {% else %}
-                <p style="margin-left: auto;">Hello, {{ user.username }} &nbsp; | &nbsp; <a href="{% url 'logout' %}">Logout</a></p>
-        {% endif %}
-    </div>
-    <div class="top flex">
-        <h1 class="home_topic main_font">{{ topic }}</h1>
-
-        <div class="dropdown_box">
-           <button class="topics_btn main_font"> Topics &#43 </button>
-            <div class="dropdown_list">
-                <a href="{% url 'category-sports' base 'sports' %}">Sports</as>
-                <a href="{% url 'category-sports' base 'letters' %}">Letters</a>
-                <a href="{% url 'category-sports' base 'others' %}">Others</a>
+            <div class="border-bottom mb-3">
+                <h1 class="h2 text-uppercase text-white custom-head-font">{{ topic }}</h1>
             </div>
-        </div>        
-    </div>
-
-    <ul class="home_ul">
-    {% for article in articles %}
-    <section class="sections">
-        {% if article.images != "none" %}
-            <div class="home_img_box">            
-                <img class="home_img" src="{{ article.images|spl|first }}" alt="article thumbnail">
-            </div>
-        {% endif %}
-
-        <li>
-            <p><a href="{% url 'article-detail'  article.id article.slug %}" class="home_a">{{ article.title|safe }}</a></p>
-            <div class="secondary_info meta_font">
-                <p class="source"> -> {{ article.source }}<p class="meta_tag">&nbsp;|&nbsp;{{ article.tag }}&nbsp;|&nbsp;{{ article.date|date:'d N Y' }} </p></p>
-            </div>
-            <p class="home_p"> {{ article.content|safe|truncatewords:60 }} </p>
-        </li>
-    </section>
-    {% endfor %}
-    </ul>
-</div>
-
-<div" class="pagination flex">
-    <nav aria-label="Article List Pages">
-        <ul class="page_nav_ul flex">
-            {% if page_obj.has_previous %}
-                {% if not q %}
-                    <li class="page_nav_li"><a href="?page=1" class="page_nav_a main_font">&laquo; first</a></li>
-                    <li class="page_nav_li"><a href="?page={{ page_obj.previous_page_number }}" class="page_nav_a main_font">{{ page_obj.previous_page_number }}</a></li>
-                {% else %}
-                    <li class="page_nav_li"><a href="?q={{ q }}&page=1" class="page_nav_a main_font">&laquo; first</a></li>
-                    <li class="page_nav_li"><a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="page_nav_a main_font">{{ page_obj.previous_page_number }}</a></li>
-                {% endif %}
-            {% else %}
-                <li class="page_nav_li"><span class="page_nav_disabled main_font">&laquo; first</span></li>
-            {% endif %}
-
-            <li class="page_nav_li"><span class="page_nav_active main_font">{{ page_obj.number }}</span></li>
-            
-            {% if page_obj.has_next %}
-                {% if not q %}
-                    <li class="page_nav_li"><a href="?page={{ page_obj.next_page_number }}" class="page_nav_a main_font">{{ page_obj.next_page_number }}</a></li>
-                    <li class="page_nav_li"><a href="?page={{ page_obj.paginator.num_pages }}" class="page_nav_a main_font">last &raquo;</a></li>
-                {% else %}
-                    <li class="page_nav_li"><a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="page_nav_a main_font">{{ page_obj.next_page_number }}</a></li>
-                    <li class="page_nav_li"><a href="?q={{ q }}&page={{ page_obj.paginator.num_pages }}" class="page_nav_a main_font">last &raquo;</a></li>
-                {% endif %}
-            {% else %}
-                <li class="page_nav_li"><span class="page_nav_disabled">last &raquo;</span></li>
-            {% endif %}
-        </ul>
-    </nav>
     
-        {% if form_date %}
-            <div>
-                <form action="{% url 'archive' %}" method="GET">
-                    {{ form_date }}
-                    <input type="submit" value="Submit">
-                </form>
-            </div>
-        {% endif %}
+            <ul class="p-0">
+                {% for article in articles %}
+
+                <section class="p-4 mt-2 d-sm-flex article-section custom-border">
+                    {% if article.images != "none" %}
+                    
+                        <div class="me-3 mb-2">
+                            <img class="img-thumbnail" src="{{ article.images|spl|first }}" alt="article thumbnail" style="max-width: 160px;">
+                        </div>
+
+                    {% endif %}
+
+    
+                    <li class="custom-font-section">
+                        <p><a class="card-link" href="{% url 'article-detail' article.id article.slug %}" >{{ article.title|safe }}</a></p>
+                        <div class="d-flex flex-wrap meta-source">
+                            <p>{{ article.source }}</p>
+                            <p style="color: white;">&nbsp;| {{ article.tag }}&nbsp;|&nbsp;{{ article.date|date:'d N Y' }} </p>
+                        </div>
+                        <p class="card-text text-white"> {{ article.content|safe|truncatewords:60 }} </p>
+                    </li>
+
+
+                </section>
+
+                {% endfor %}
+            </ul>
+
+        </div>
+
+    </div> 
+
+    <div class="row">
+
+        <div class="d-flex flex-wrap justify-content-between px-sm-1 px-md-5">
+
+            <nav aria-label="Article List Pages">
+
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        {% if not q %}
+                            <li class="page-item"><a class="page-link" href="?page=1" >&laquo; first</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}" >{{ page_obj.previous_page_number }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?q={{ q }}&page=1" >&laquo; first</a></li>
+                            <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}" >{{ page_obj.previous_page_number }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">&laquo; First</span></li>
+                    {% endif %}
+
+                    <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                    
+                    {% if page_obj.has_next %}
+                        {% if not q %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" >{{ page_obj.next_page_number }}</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" >Last &raquo;</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}" >{{ page_obj.next_page_number }}</a></li>
+                            <li class="page-item"><a class="page-link" href="?q={{ q }}&page={{ page_obj.paginator.num_pages }}" >Last &raquo;</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Last &raquo;</span></li>
+                    {% endif %}
+                </ul>
+
+            </nav>
+        
+            {% if form_date %}
+                <div id="calendar-input">
+                    <form class="d-flex" action="{% url 'archive' %}" method="GET">
+                        {{ form_date }}
+                        <input class="btn btn-sm btn-primary ms-1" type="submit" value="Submit">
+                    </form>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div id="footer" class="px-5 d-flex justify-content-center">
+            <span class="p-3">
+                Made by <a href="https://github.com/jblnt">Jules <span data-feather="github"></span></a> | v2 2021
+            </span>
+            
+        </div>
+        
+    </div>
 
 </div>
 
-<script>
-    function openNav() {
-        document.getElementById("main_overlay").style.width = "100%";
-    }
-    function closeNav() {
-        document.getElementById("main_overlay").style.width = "0%";
-    }
-</script>
+
 {% endblock content %}

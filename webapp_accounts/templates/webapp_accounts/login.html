@@ -5,43 +5,49 @@
 {% endblock nav %}
 
 {% block content %}
-<div class="sections log_ main_font">
-    <h1>Login</h1>
+<div id="login-dialog" class="col-11 col-lg-7 m-auto mt-5 p-2 custom-border">
+    <h1 class="text-center text-white custom-head-font">Login</h1>
 
     {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+    <p class="text-center text-danger font-roboto ">Provided Username and/or Password is invalid. Please try again.</p>
     {% endif %}
 
     {% if next %}
         {% if user.is_authenticated %}
-        <p>Your account doesn't have access to this page. To proceed,
+        <p class="text-white text-center py-3 font-roboto">Your account doesn't have access to this page. To proceed,
         please login with an account that has access.</p>
         {% else %}
-        <p>Please login to see this page.</p>
+        <p class="text-white text-center py-3 font-roboto">Please login to see this page.</p>
         {% endif %}
     {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <table class="table">
-        <tr>
-            <td>{{ form.username.label_tag }}</td>
-            <td>{{ form.username }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.password.label_tag }}</td>
-            <td>{{ form.password }}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <button type="submit" value="Login" class="main_font">Login</button>
-            </td>
-        </tr>
-        </table>
+    <div class="d-flex justify-content-center">
 
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table class="custom-table">
+            <tr class="font-roboto">
+                <td class="text-white">{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr class="font-roboto">
+                <td class="text-white">{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" value="Login" class="btn btn-primary">Login</button>
+                </td>
+            </tr>
+            </table>
+    
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+    </div>
+
+
 </div>
 
 {% endblock content %}

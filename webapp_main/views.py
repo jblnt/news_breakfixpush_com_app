@@ -22,25 +22,6 @@ def day():
     #return datetime(2020, 3, 17)
 
 # Create your views here.
-'''
-@login_required
-def articleListView(request):
-    article_list=Articles.objects.filter(date = day())
-    paginator=Paginator(article_list, 8)
-    p_num=request.GET.get('page')
-    page_obj=paginator.get_page(p_num)
-
-    context={
-        'articles':page_obj.object_list,
-        'title':'All Stories',
-        'topic':'All Stories',
-        'form':SearchForm(),
-        'page_obj':page_obj
-    }
-
-    return render(request, 'webapp_main/articles_list.html', context)
-'''
-
 def newsListView(request):
     article_list=Articles.objects.filter(tag__icontains="News", date=day())
 
@@ -78,8 +59,6 @@ def archiveListView(request):
             'articles':page_obj.object_list,
             'title': request.GET["q"]+' Stories',
             'topic':'News From '+request.GET["q"],
-            #'form':SearchForm(),
-            #'form_date': DateForm(),
             'q':request.GET["q"],
             'page_obj':page_obj,
             'base': request.GET['q']
@@ -88,7 +67,7 @@ def archiveListView(request):
     return render(request, 'webapp_main/articles_list.html', context)
 
 @login_required
-def sportsListView(request, source, topic):
+def categoryListView(request, source, topic):
     if source == 'all':
         if topic != 'others':
             article_list=Articles.objects.filter(tag__icontains=topic, date=day())
@@ -114,51 +93,11 @@ def sportsListView(request, source, topic):
         'articles':page_obj.object_list,
         'title':source.upper(),
         'topic': source+' - '+topic,
-        #'form':SearchForm(),
         'page_obj':page_obj,
         'base': source
-
     }
 
     return render(request, 'webapp_main/articles_list.html', context)
-
-'''
-@login_required
-def lettersListView(request):
-    article_list=Articles.objects.filter(tag__icontains="Letters", date=day())
-
-    paginator=Paginator(article_list, 8)
-    p_num=request.GET.get('page')
-    page_obj=paginator.get_page(p_num)
-
-    context={
-        'articles':page_obj.object_list,
-        'title':'Letters',
-        'topic':'Letters',
-        #'form':SearchForm(),
-        'page_obj':page_obj
-    }
-
-    return render(request, 'webapp_main/articles_list.html', context)
-
-@login_required
-def othersListView(request):
-    article_list=Articles.objects.exclude(Q(tag__icontains="News")|Q(tag="Sports")|Q(tag__icontains="Letters")).filter(date=day()).order_by('tag')
-
-    paginator=Paginator(article_list, 8)
-    p_num=request.GET.get('page')
-    page_obj=paginator.get_page(p_num)
-
-    context={
-        'articles':page_obj.object_list,
-        'title':'Others',
-        'topic':'Everything Else',
-        #'form':SearchForm(),
-        'page_obj':page_obj
-    }
-
-    return render(request, 'webapp_main/articles_list.html', context)
-'''
 
 @login_required
 def source(request, source):
@@ -171,75 +110,23 @@ def source(request, source):
         'articles':page_obj.object_list,
         'title':source.upper(),
         'topic':source+' news',
-        #'form':SearchForm(),
         'page_obj':page_obj,
         'base': source
     }
 
     return render(request, 'webapp_main/articles_list.html', context)
 
-'''
-@login_required
-def source01_ListView(request):
-    article_list=Articles.objects.filter(source__icontains="kaieteur", date=day())
-    paginator=Paginator(article_list, 8)
-    p_num=request.GET.get('page')
-    page_obj=paginator.get_page(p_num)
-
-    context={
-        'articles':page_obj.object_list,
-        'title':'Kaieteur',
-        'topic':'kaieteur news',
-        #'form':SearchForm(),
-        'page_obj':page_obj
-    }
-
-    return render(request, 'webapp_main/articles_list.html', context)
-
-@login_required
-def source02_ListView(request):
-    article_list=Articles.objects.filter(source__icontains="stabroek", date=day())
-    paginator=Paginator(article_list, 8)
-    p_num=request.GET.get('page')
-    page_obj=paginator.get_page(p_num)
-
-    context={
-        'articles':page_obj.object_list,
-        'title':'Stabroek',
-        'topic':'stabroek news',
-        #'form':SearchForm(),
-        'page_obj':page_obj
-    }
-
-    return render(request, 'webapp_main/articles_list.html', context)
-'''
-
 class ArticleDetailView(LoginRequiredMixin, DetailView):
     model=Articles
     context_object_name='article'
 
     query_pk_and_slug = True
-    
-'''
-class SearchView(LoginRequiredMixin, ListView):
-    model=Articles
-
-    context_object_name='articles'
-    paginate_by=8
-
-    def get_queryset(self):
-        query=self.request.GET.get('q')
-
-        return Articles.objects.filter(title__icontains=query).order_by('source')
 
     def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
-        if self.request.GET.get('q'):
-            context['q']=self.request.GET.get('q')
-            #print(context['q'])
-        context['base']='all'
+        context = super().get_context_data(**kwargs)
+        context['base'] = 'all'
+
         return context
-'''
 
 @login_required
 def SearchView(request):
@@ -254,8 +141,6 @@ def SearchView(request):
             'articles':page_obj.object_list,
             'title': request.GET["q"]+' Results',
             'topic':'Results For "'+request.GET["q"]+'"',
-            #'form':SearchForm(),
-            #'form_date': DateForm(),
             'q':request.GET["q"],
             'page_obj':page_obj,
             'base': 'search/'+request.GET["q"]
@@ -279,8 +164,6 @@ def SearchView_Filter(request, query, topic):
             'articles':page_obj.object_list,
             'title': query+' Results',
             'topic':'Results For "'+query+'"',
-            #'form':SearchForm(),
-            #'form_date': DateForm(),
             'q':query,
             'page_obj':page_obj,
             'base': 'search/'+query
